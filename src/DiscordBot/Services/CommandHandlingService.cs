@@ -17,6 +17,7 @@ namespace DiscordBot.Services
         {
             _discord = discord;
             _commands = commands;
+            _provider = provider;
 
             _discord.MessageReceived += MessageReceived;
         }
@@ -40,11 +41,8 @@ namespace DiscordBot.Services
             var context = new SocketCommandContext(_discord, message);
             var result = await _commands.ExecuteAsync(context, argPos, _provider);
 
-            if ((result is ParseResult || 
-                result is PreconditionResult || 
-                result is ExecuteResult || 
-                result is TypeReaderResult) &&
-                !result.IsSuccess)
+            if (result.Error.HasValue && 
+                result.Error.Value != CommandError.UnknownCommand)
                 await context.Channel.SendMessageAsync(result.ToString());
         }
     }
