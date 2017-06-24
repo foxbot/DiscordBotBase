@@ -54,7 +54,7 @@ namespace DiscordBot.Services
                 var _ = command.Context.Channel.SendMessageAsync($"Error: {command.Message}");
             }
 
-            _discordLogger.Log(
+            _commandsLogger.Log(
                 LogLevelFromSeverity(message.Severity),
                 0,
                 message,
