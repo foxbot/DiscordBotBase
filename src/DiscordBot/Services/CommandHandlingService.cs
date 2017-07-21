@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using DiscordBot.Data;
+using LiteDB;
 
 namespace DiscordBot.Services
 {
@@ -12,12 +14,14 @@ namespace DiscordBot.Services
         private readonly DiscordSocketClient _discord;
         private readonly CommandService _commands;
         private IServiceProvider _provider;
+        private LiteDatabase _database;
 
-        public CommandHandlingService(IServiceProvider provider, DiscordSocketClient discord, CommandService commands)
+        public CommandHandlingService(IServiceProvider provider, DiscordSocketClient discord, CommandService commands, LiteDatabase database)
         {
             _discord = discord;
             _commands = commands;
             _provider = provider;
+            _database = database;
 
             _discord.MessageReceived += MessageReceived;
         }
@@ -37,13 +41,34 @@ namespace DiscordBot.Services
 
             int argPos = 0;
             if (!message.HasMentionPrefix(_discord.CurrentUser, ref argPos)) return;
+            // Uncomment below to enable a string prefix (these should only be used with private bots!)
+            // if (!message.HasStringPrefix("!", ref argPos)) return;
 
             var context = new SocketCommandContext(_discord, message);
             var result = await _commands.ExecuteAsync(context, argPos, _provider);
 
+            if (result.Error.HasValue &&
+                result.Error.Value == CommandError.UnknownCommand)
+                return;
+
             if (result.Error.HasValue && 
                 result.Error.Value != CommandError.UnknownCommand)
                 await context.Channel.SendMessageAsync(result.ToString());
+
+            // Add points to the user for using the bot
+            // Do this asynchronously, on another task, to prevent database access (and levelup notifications?) from halting the bot
+            _ = UpdateLevelAsync(context);
+        }
+
+        private Task UpdateLevelAsync(SocketCommandContext context)
+        {
+            var users = _database.GetCollection<User>("users");
+            var user = users.FindOne(u => u.Id == context.User.Id) ?? new User { Id = context.User.Id };
+            ++user.Points;
+            users.Upsert(user);
+
+            // If sending a levelup notification, flag this Task as async and remove the following line
+            return Task.CompletedTask;
         }
     }
 }

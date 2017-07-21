@@ -7,6 +7,7 @@ using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using DiscordBot.Services;
+using LiteDB;
 
 namespace DiscordBot
 {
@@ -45,6 +46,7 @@ namespace DiscordBot
                 .AddSingleton<LogService>()
                 // Extra
                 .AddSingleton(_config)
+                .AddSingleton(new LiteDatabase("bot.db"))
                 // Add additional services here...
                 .BuildServiceProvider();
         }
