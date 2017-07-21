@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Discord.Net.WebSocket" Version="1.0.0-rc2" />
-    <PackageReference Include="Discord.Net.Commands" Version="1.0.0-rc2" />
+    <PackageReference Include="Discord.Net.WebSocket" Version="1.0.1" />
+    <PackageReference Include="Discord.Net.Commands" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="1.1.2" />
     <!-- Remove this line if using another configuration host: -->
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="1.1.2" />
