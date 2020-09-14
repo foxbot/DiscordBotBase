@@ -5,6 +5,7 @@ using LiteDB;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,17 +28,21 @@ namespace DiscordBot.Modules
         private async Task CreateFeedbackAsynch(string feedback)
         {
             int created;
+            if (Context.Guild != null)
+            {
+                await Context.Message.Author.SendMessageAsync("Please DM me to leave feedback! You can reply with GiveFeedback <your feedback message here> and I will get it to the right people :)");
+                return;
+            }
             try
             {
                 var feedbacks = db.GetCollection<Feedback>();
                 created = feedbacks.Insert(new Feedback() {FeedbackMessage = feedback, FeedbackProvider = Context.User.Id, IsOpen = true });
             } catch (Exception E)
             {
-                await ReplyAsync("Something went wrong giving the feedback :( Exception is: " + E.Message);
+                await ReplyAsync("Something went wrong giving the feedback! Exception is: " + E.Message);
                 return;
             }
-
-            await ReplyAsync("Feedback with ID of " + created + " was created");
+            await ReplyAsync("Your Feedback with ID of " + created + " was created");
             return;
         }
 
@@ -60,7 +65,7 @@ namespace DiscordBot.Modules
             }
             catch (Exception E)
             {
-                await ReplyAsync("Something went wrong getting the feedback :( Exception is: " + E.Message);
+                await ReplyAsync("Something went wrong getting the feedback! Exception is: " + E.Message);
                 return;
             }
         }
@@ -82,6 +87,8 @@ namespace DiscordBot.Modules
                     }
                     var response = input[1];
                     await targetUser.SendMessageAsync(response);
+                    feedback.IsOpen = false;
+                    feedbacks.Update(feedback);
                 }
                 else
                 {
@@ -91,7 +98,7 @@ namespace DiscordBot.Modules
             }
             catch (Exception E)
             {
-                await ReplyAsync("Something went wrong replying to the feedback :( Exception is " + E.Message);
+                await ReplyAsync("Something went wrong replying to the feedback! Exception is " + E.Message);
                 return;
             }
 
