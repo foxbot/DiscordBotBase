@@ -40,7 +40,9 @@ namespace DiscordBot.Services
             if (message.Source != MessageSource.User) return;
 
             int argPos = 0;
-            if (!message.HasMentionPrefix(_discord.CurrentUser, ref argPos)) return;
+
+            // Don't require prefix for DMs 
+            if (!message.HasMentionPrefix(_discord.CurrentUser, ref argPos) && !(message.Channel is SocketDMChannel)) return;
             // Uncomment below to enable a string prefix (these should only be used with private bots!)
             // if (!message.HasStringPrefix("!", ref argPos)) return;
 
