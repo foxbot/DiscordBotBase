@@ -28,9 +28,6 @@ namespace DiscordBot.Modules
         [Command("GetAllOpenFeedback")]
         public Task GetAllOpenFeedback() => GetAllOpenFeedbackAsynch();
 
-        [Command("DeleteAllFeedback")]
-        public Task DeleteAllFeedback() => DeleteAllFeedbackAsynch(); 
-
         private async Task CreateFeedbackAsynch(params string[] feedback)
         {
             int created;
@@ -133,17 +130,6 @@ namespace DiscordBot.Modules
             {
                 await ReplyAsync("Something went wrong getting the open feedback! Exception is " + e.Message);
             }
-        }
-
-        /// <summary>
-        /// Testing only
-        /// </summary>
-        /// <returns></returns>
-        private async Task DeleteAllFeedbackAsynch()
-        {
-            var feedbacks = db.GetCollection<Feedback>();
-            feedbacks.Delete(_ => true);
-            return;
         }
     }
 }
