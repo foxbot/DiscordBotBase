@@ -30,7 +30,6 @@ namespace DiscordBot.Services
         {
             _provider = provider;
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly());
-            // Add additional initialization code here...
         }
 
         private async Task MessageReceived(SocketMessage rawMessage)
@@ -43,8 +42,6 @@ namespace DiscordBot.Services
 
             // Don't require prefix for DMs 
             if (!message.HasMentionPrefix(_discord.CurrentUser, ref argPos) && !(message.Channel is SocketDMChannel)) return;
-            // Uncomment below to enable a string prefix (these should only be used with private bots!)
-            // if (!message.HasStringPrefix("!", ref argPos)) return;
 
             var context = new SocketCommandContext(_discord, message);
             var result = await _commands.ExecuteAsync(context, argPos, _provider);
@@ -53,24 +50,9 @@ namespace DiscordBot.Services
                 result.Error.Value == CommandError.UnknownCommand)
                 return;
 
-            if (result.Error.HasValue && 
+            if (result.Error.HasValue &&
                 result.Error.Value != CommandError.UnknownCommand)
                 await context.Channel.SendMessageAsync(result.ToString());
-
-            // Add points to the user for using the bot
-            // Do this asynchronously, on another task, to prevent database access (and levelup notifications?) from halting the bot
-            _ = UpdateLevelAsync(context);
-        }
-
-        private Task UpdateLevelAsync(SocketCommandContext context)
-        {
-            var users = _database.GetCollection<User>("users");
-            var user = users.FindOne(u => u.Id == context.User.Id) ?? new User { Id = context.User.Id };
-            ++user.Points;
-            users.Upsert(user);
-
-            // If sending a levelup notification, flag this Task as async and remove the following line
-            return Task.CompletedTask;
         }
     }
 }
