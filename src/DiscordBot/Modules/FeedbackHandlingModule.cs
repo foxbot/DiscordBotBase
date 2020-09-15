@@ -17,7 +17,7 @@ namespace DiscordBot.Modules
         public LiteDatabase db { get; set; }
 
         [Command("GiveFeedback")]
-        public Task GiveFeedback(string feedback) => CreateFeedbackAsynch(feedback);
+        public Task GiveFeedback(params string[] feedback) => CreateFeedbackAsynch(feedback);
 
         [Command("GetFeedback")]
         public Task GetFeedback(int id) => GetFeedbackAsynch(id);
@@ -25,18 +25,25 @@ namespace DiscordBot.Modules
         [Command("ReplyToFeedback")]
         public Task ReplyToFeedback(params string[] inputs) => ReplyToFeedbackAsynch(inputs);
 
-        private async Task CreateFeedbackAsynch(string feedback)
+        [Command("GetAllOpenFeedback")]
+        public Task GetAllOpenFeedback() => GetAllOpenFeedbackAsynch();
+
+        [Command("DeleteAllFeedback")]
+        public Task DeleteAllFeedback() => DeleteAllFeedbackAsynch(); 
+
+        private async Task CreateFeedbackAsynch(params string[] feedback)
         {
             int created;
             if (Context.Guild != null)
             {
                 await Context.Message.Author.SendMessageAsync("Please DM me to leave feedback! You can reply with GiveFeedback <your feedback message here> and I will get it to the right people :)");
+                await Context.Message.DeleteAsync();
                 return;
             }
             try
             {
                 var feedbacks = db.GetCollection<Feedback>();
-                created = feedbacks.Insert(new Feedback() {FeedbackMessage = feedback, FeedbackProvider = Context.User.Id, IsOpen = true });
+                created = feedbacks.Insert(new Feedback() {FeedbackMessage = feedback[0], FeedbackProvider = Context.User.Id, IsOpen = true });
             } catch (Exception E)
             {
                 await ReplyAsync("Something went wrong giving the feedback! Exception is: " + E.Message);
@@ -102,6 +109,41 @@ namespace DiscordBot.Modules
                 return;
             }
 
+        }
+
+        private async Task GetAllOpenFeedbackAsynch()
+        {
+            try
+            {
+                var feedbacks = db.GetCollection<Feedback>();
+                var openFeedback = feedbacks.Find(db => db.IsOpen).ToList(); 
+
+                if(!openFeedback.Any())
+                {
+                    await ReplyAsync("There is no open feedback right now");
+                    return;
+                }
+
+                openFeedback.ForEach(async fb =>
+                {
+                    await ReplyAsync("ID: " + fb.Id + " Message: " + fb.FeedbackMessage);
+                    return;
+                });
+            } catch(Exception e)
+            {
+                await ReplyAsync("Something went wrong getting the open feedback! Exception is " + e.Message);
+            }
+        }
+
+        /// <summary>
+        /// Testing only
+        /// </summary>
+        /// <returns></returns>
+        private async Task DeleteAllFeedbackAsynch()
+        {
+            var feedbacks = db.GetCollection<Feedback>();
+            feedbacks.Delete(_ => true);
+            return;
         }
     }
 }
