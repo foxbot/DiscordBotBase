@@ -16,4 +16,14 @@ More features are planning including role-based permissions, configurable server
 allowing you to have feedback conveyed as soon as its submitted instead of relying on querying the bot), intelligent recognition of which server feedback is for (in
 case a user is in multiple servers using the bot), and other QOL enhancements. 
 
+Usage: 
+
+GiveFeedback "<Your Feedback Here>" - Works only in DM's to the bot (FeedbackLoop will helpfully tell you to DM him if you try to give feedback in a server and delete your message to preserve your anonymity). Make sure you wrap your feedback in quotes - GiveFeedback "I sure wish this documentation was prettier". Feedback loop will confirm your submission and give you your feedback ID. 
+
+GetFeedback <ID> - Give FeedbackLoop a feedback ID and he will return the feedback message stored for you. EZ
+  
+ReplyToFeedback <ID> "<Feedback Response>" - The cool part. Give the bot an ID and a message responding to that feedback and he will send a DM to the orignal submitter with that response. At no point in this process is the original submitter's ID exposed - allowing server owners/officers/DM's/whoever to address feedback without compromising anonymity. 
+  
+GetAllOpenFeedback - Gets all the open feedback. Boring obligatory index option. 
+
 Forked from foxbot/DiscordBotBase - https://github.com/foxbot/DiscordBotBase
