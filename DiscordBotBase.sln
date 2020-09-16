@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiscordBot", "src\DiscordBot\DiscordBot.csproj", "{52A60847-0133-4716-B75C-044DF48A0DC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FeedbackLoop", "src\DiscordBot\FeedbackLoop.csproj", "{52A60847-0133-4716-B75C-044DF48A0DC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,5 +30,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4D0E0557-645F-429E-B6E7-4CF2A4A2567F}
 	EndGlobalSection
 EndGlobal
