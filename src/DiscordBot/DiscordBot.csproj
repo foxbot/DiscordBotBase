@@ -18,4 +18,10 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Settings.job">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
