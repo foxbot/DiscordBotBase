@@ -17,18 +17,16 @@ namespace DiscordBot
             => new Program().MainAsync().GetAwaiter().GetResult();
 
         private DiscordSocketClient _client;
-        private IConfiguration _config;
 
         public async Task MainAsync()
         {
             _client = new DiscordSocketClient();
-            _config = BuildConfig();
 
             var services = ConfigureServices();
             services.GetRequiredService<LogService>();
             await services.GetRequiredService<CommandHandlingService>().InitializeAsync(services);
-
-            await _client.LoginAsync(TokenType.Bot, _config["token"]);
+            var token = Environment.GetEnvironmentVariable("FeedbackLoopToken");
+            await _client.LoginAsync(TokenType.Bot, token);
             await _client.StartAsync();
 
             await Task.Delay(-1);
@@ -45,18 +43,9 @@ namespace DiscordBot
                 .AddLogging()
                 .AddSingleton<LogService>()
                 // Extra
-                .AddSingleton(_config)
                 .AddSingleton(new LiteDatabase("bot.db"))
                 // Add additional services here...
                 .BuildServiceProvider();
-        }
-
-        private IConfiguration BuildConfig()
-        {
-            return new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("config.json")
-                .Build();
         }
     }
 }
