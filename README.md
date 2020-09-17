@@ -26,4 +26,8 @@ ReplyToFeedback <ID> "<Feedback Response>" - The cool part. Give the bot an ID a
   
 GetAllOpenFeedback - Gets all the open feedback. Boring obligatory index option. 
 
+Deployed to Azure via CI/CD pipeline in Azure Dev Ops
+
+[![Build status](https://dev.azure.com/cecishop/Feedback_Loop_Bot/_apis/build/status/FeedbackLooper%20-%20CI)](https://dev.azure.com/cecishop/Feedback_Loop_Bot/_build/latest?definitionId=1)
+
 Forked from foxbot/DiscordBotBase - https://github.com/foxbot/DiscordBotBase
