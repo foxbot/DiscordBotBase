@@ -137,6 +137,9 @@ namespace DiscordBot.Modules
                     await ReplyAsync("ID: " + fb.Id + " Message: " + fb.FeedbackMessage);
                     return;
                 });
+
+                return;
+
             } catch(Exception e)
             {
                 await ReplyAsync("Something went wrong getting the open feedback! Exception is " + e.Message);
